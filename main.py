@@ -2,6 +2,7 @@ import random
 
 import pygame as pg
 import sys
+import math
 
 pg.init()
 size = width, height = 1920, 1200
@@ -13,6 +14,7 @@ class Particle:
     image_name = "particle.bmp"
     particles = []
     tolerance = 500
+    clumping_potency = 500
 
     def __init__(self, x_speed, y_speed, x, y):
         self.x_speed = x_speed
@@ -41,35 +43,44 @@ class Particle:
         pass
 
     def apply_spacing(self):
+        pass
+
+    def apply_movement(self, x, y, potency):
+
+        pass
+
+    def apply_clumping(self):
+        center_x, center_y = Particle.find_center()
+        self.x_speed = self.x_speed
+        # movement
+
+    def apply_alignment(self):
+        pass
+
+    @staticmethod
+    def find_center():
+        total_x = 0.0
+        total_y = 0.0
         for particle in Particle.particles:
-            if particle is not self:
-                if particle.pos.x - .1 < self.pos.x < particle.pos.x + .1 and particle.pos.y - .1 < self.pos.y < particle.pos.y + .1:
-                    self.x_speed = random.randint(-50, 50)
-                    self.y_speed = random.randint(-50, 50)
-                    break
-                if self.pos.x != particle.pos.x:
-                    if self.pos.x > particle.pos.x:
-                        self.x_speed = self.x_speed + (Particle.tolerance / (self.pos.x - particle.pos.x)**2)
-                    else:
-                        self.x_speed = self.x_speed - (Particle.tolerance / (self.pos.x - particle.pos.x) ** 2)
-                if self.pos.y != particle.pos.y:
-                    if self.pos.y > particle.pos.y:
-                        self.y_speed = self.y_speed + (Particle.tolerance / (self.pos.y - particle.pos.y) ** 2)
-                    else:
-                        self.y_speed = self.y_speed - (Particle.tolerance / (self.pos.y - particle.pos.y) ** 2)
+            total_x = total_x + particle.pos.x
+            total_y = total_y + particle.pos.y
+            pass
+        return total_x / len(Particle.particles), total_y / len(Particle.particles)
+        pass
 
-        if self.pos.x != 0:
-            self.x_speed = self.x_speed + (Particle.tolerance / (self.pos.x - 0) ** 2)
-        if self.pos.y != 0:
-            self.y_speed = self.y_speed + (Particle.tolerance / (self.pos.y - 0) ** 2)
-        if self.pos.x != width:
-            self.x_speed = self.x_speed - (Particle.tolerance / (self.pos.x - width) ** 2)
-        if self.pos.y != height:
-            self.y_speed = self.y_speed - (Particle.tolerance / (self.pos.y - height) ** 2)
-
+    @staticmethod
+    def find_heading():
+        total_x = 0.0
+        total_y = 0.0
+        for particle in Particle.particles:
+            total_x = total_x + particle.pos.x
+            total_y = total_y + particle.pos.y
+            pass
+        return total_x / len(Particle.particles), total_y / len(Particle.particles)
+        pass
     def apply_friction(self):
-        self.x_speed = self.x_speed / 1.07
-        self.y_speed = self.y_speed / 1.07
+        self.x_speed = self.x_speed / 1.1
+        self.y_speed = self.y_speed / 1.1
         #if 0 < self.x_speed < 1:
         #    self.x_speed = 1
         #elif 0 > self.x_speed > -1:
